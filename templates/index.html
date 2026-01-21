@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Enterprise Jarvis</title>
+</head>
+<body>
+  <h2>Enterprise Jarvis</h2>
+
+  <input id="input" placeholder="Ask a question..." />
+  <button onclick="send()">Send</button>
+
+  <p id="output"></p>
+
+  <script>
+    function send() {
+      fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: document.getElementById("input").value })
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("output").innerText = data.response;
+      });
+    }
+  </script>
+</body>
+</html>
