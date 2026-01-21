@@ -1,4 +1,4 @@
-# Diligent Jarvis – Enterprise AI Assistant
+Diligent Jarvis – Enterprise AI Assistant
 
 Problem Statement
 Design and implement a personal AI assistant for enterprise users using:
@@ -8,7 +8,7 @@ Design and implement a personal AI assistant for enterprise users using:
 
 that can understand natural language queries and return contextual, relevant responses.
 
----
+
 
 Solution Overview
 Diligent Jarvis is a lightweight enterprise AI assistant inspired by “Jarvis”.  
@@ -17,119 +17,99 @@ It follows a **Retrieval-Augmented Generation (RAG)** approach:
 1. User asks a question through a chatbot UI  
 2. The query is converted into vector embeddings  
 3. Relevant context is retrieved from **Pinecone**  
-4. The retrieved context is passed to a **self-hosted LLaMA model (via Ollama)**  
-5. The model generates a contextual response for the user  
+4. The retrieved context is passed to a **self-hosted LLM (via Ollama)**  
+5. The model generates a contextual response  
 
-This approach ensures accurate, explainable, and enterprise-ready AI responses.
 
----
 
 Architecture
 
-User
-↓
-Chatbot UI (HTML + JS)
-↓
-Flask Backend (Python)
-↓
-Embedding Model (384-dim)
-↓
-Pinecone Vector Database (jarvis-index)
-↓
-Relevant Context
-↓
-Self-hosted LLaMA (Ollama)
-↓
-Response to User
+User  
+↓  
+Chatbot UI (HTML + JS)  
+↓  
+Flask Backend (Python)  
+↓  
+Embedding Model (384-dim)  
+↓  
+Pinecone Vector Database (`jarvis-index`)  
+↓  
+Relevant Context  
+↓  
+Self-hosted LLM (Ollama)  
+↓  
+Response to User  
 
-yaml
-Copy code
 
----
 
-## ⚙️ Tech Stack
+⚙️ Tech Stack
 
 | Component | Technology |
-|--------|-----------|
-Backend | Flask (Python) |
-Vector Database | Pinecone |
-Embeddings | Sentence Transformers (384 dimensions) |
-LLM | LLaMA (self-hosted using Ollama) |
-UI | HTML + JavaScript |
-Cloud | AWS (Pinecone us-east-1) |
+|---------|------------|
+| Backend | Flask (Python) |
+| Vector DB | Pinecone |
+| Embeddings | Sentence Transformers (384-dim) |
+| LLM | Self-hosted via Ollama |
+| UI | HTML + JavaScript |
+| Cloud | AWS (Pinecone us-east-1) |
 
----
 
-## 🔑 Key Features
+
+ 🔑 Key Features
 - Natural language query understanding
-- Semantic search using Pinecone vector database
-- Context-aware responses using a self-hosted LLM
-- Simple and interactive chatbot interface
-- Modular and scalable enterprise AI architecture
-
----
-
-## 🤖 AI / Technical Approach
-
-### Embeddings
-- User queries and documents are converted into **384-dimensional vectors**
-- Compatible with Pinecone index configuration
-
-### Vector Search
-- Pinecone performs **cosine similarity search**
-- Retrieves the most relevant enterprise knowledge context
-
-### Self-hosted LLM
-- LLaMA is run **locally using Ollama**
-- Ensures data privacy and enterprise compliance
-- Retrieved context is injected into the prompt for accurate responses
+- Semantic search using Pinecone
+- Context-aware AI responses
+- Lightweight, minimal chatbot UI
+- Enterprise-ready RAG architecture
 
 ---
 
 📊 Success Metrics
-- Relevance of responses
-- Retrieval accuracy from Pinecone
-- Response latency
-- User satisfaction with chatbot answers
+- Response relevance
+- Retrieval accuracy
+- Latency
+- User experience
 
----
 
- Risks & Limitations
-- Limited knowledge base for demonstration purposes
-- Potential LLM hallucinations
-- Local LLM performance depends on system resources
 
----
+⚠️ Risks & Limitations
+- Limited demo knowledge base
+- Possible LLM hallucinations
+- Local LLM depends on system resources
 
-Future Enhancements
-- Expand enterprise knowledge base
-- Add authentication and role-based access
-- Improve prompt engineering for higher accuracy
-- Deploy backend and LLM using cloud infrastructure
 
----
-▶️ How to Run the Project
 
-1️⃣ Start the self-hosted LLM
+## 🚀 Future Enhancements
+- Larger enterprise knowledge base
+- Authentication & role-based access
+- Better prompt engineering
+- Cloud deployment
+
+
+
+## ▶️ How to Run
+
+1. Start Ollama:
 ```bash
-ollama run llama3
+ollama run gemma3:4b
+
 2️⃣ Install dependencies
-bash
-Copy code
 pip install -r requirements.txt
-3️⃣ Run the backend
-bash
-Copy code
+
+3️⃣ Set Pinecone API Key (Windows)
+setx PINECONE_API_KEY "your_pinecone_api_key_here"
+
+
+Restart terminal after setting the variable.
+
+4️⃣ Run the backend
 python app.py
-4️⃣ Open in browser
-cpp
-Copy code
+
+5️⃣ Open in browser
 http://127.0.0.1:5000
+
 📂 Repository Structure
-markdown
-Copy code
 diligent-jarvis/
-│
 ├── app.py
 ├── requirements.txt
 ├── README.md
