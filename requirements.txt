@@ -1,4 +1,4 @@
 flask
-pinecone-client
+pinecone
 sentence-transformers
 requests

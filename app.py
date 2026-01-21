@@ -1,34 +1,45 @@
 from flask import Flask, request, jsonify, render_template
 from sentence_transformers import SentenceTransformer
-import pinecone
+from pinecone import Pinecone, ServerlessSpec
 import requests
+import os
 
 app = Flask(__name__)
 
-# ---------- Pinecone Setup ----------
-pinecone.init(
-    api_key="YOUR_PINECONE_API_KEY",
-    environment="us-east-1"
-)
+# -------- Pinecone Setup (NEW SDK + AUTO CREATE INDEX) --------
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 
-index = pinecone.Index("jarvis-index")
+INDEX_NAME = "jarvis-index"
 
-# ---------- Embedding Model ----------
+# Create index if it does not exist
+if INDEX_NAME not in pc.list_indexes().names():
+    pc.create_index(
+        name=INDEX_NAME,
+        dimension=384,
+        metric="cosine",
+        spec=ServerlessSpec(
+            cloud="aws",
+            region="us-east-1"
+        )
+    )
+
+index = pc.Index(INDEX_NAME)
+
+# -------- Embedding Model --------
 embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 
-# ---------- Sample Knowledge ----------
+# -------- Sample Knowledge --------
 documents = [
     "Board members need quick insights into governance and risk.",
     "Compliance reports are generated quarterly for audit purposes.",
     "AI can summarize large governance datasets efficiently."
 ]
 
-# ---------- Upsert (run once) ----------
+# -------- Upsert Knowledge --------
 for i, doc in enumerate(documents):
     embedding = embed_model.encode(doc).tolist()
     index.upsert([(str(i), embedding, {"text": doc})])
 
-# ---------- Routes ----------
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -47,11 +58,10 @@ def chat():
 
     context = result["matches"][0]["metadata"]["text"]
 
-    # Call self-hosted LLaMA via Ollama
     response = requests.post(
         "http://localhost:11434/api/generate",
         json={
-            "model": "llama3",
+            "model": "gemma3:4b",
             "prompt": f"Context: {context}\nQuestion: {user_query}"
         }
     )
